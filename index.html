@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kaldırma Kuvveti Simülasyonu 2</title>
+  <style>
+    :root{--bg:#020202;--cyan:#00f7ff;--pink:#ff2bd6;--green:#39ff14;--yellow:#fff01f;--orange:#ff9f1c;--white:#ecfbff;--grid:rgba(0,247,255,.07)}
+    *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+    body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--white);overflow-x:hidden}
+    .wrap{max-width:960px;margin:auto;padding:10px}
+    h1{text-align:center;color:var(--pink);text-shadow:0 0 10px var(--pink),0 0 22px var(--pink);margin:6px 0 2px;font-size:clamp(18px,3vw,36px)}
+    h2{text-align:center;color:var(--cyan);text-shadow:0 0 10px var(--cyan),0 0 22px var(--cyan);margin:0 0 10px;font-size:clamp(14px,2.2vw,24px)}
+    .data-row{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-bottom:8px}
+    .data-box{background:#111;border:2px solid #333;border-radius:12px;padding:8px 12px;text-align:center;min-width:120px}
+    .data-box .dlabel{font-size:11px;color:#aaa;margin-bottom:2px}
+    .data-box .dvalue{font-size:18px;font-weight:bold}
+    .data-box.weight-box{border-color:var(--pink)}.data-box.weight-box .dvalue{color:var(--pink);text-shadow:0 0 8px var(--pink)}
+    .data-box.buoy-box{border-color:var(--green)}.data-box.buoy-box .dvalue{color:var(--green);text-shadow:0 0 8px var(--green)}
+    .data-box.fluid-box{border-color:var(--cyan)}.data-box.fluid-box .dvalue{color:var(--cyan);text-shadow:0 0 8px var(--cyan)}
+    .data-box.boat-box{border-color:var(--orange)}.data-box.boat-box .dvalue{color:var(--orange);text-shadow:0 0 8px var(--orange)}
+    .data-box.status-box{border-color:var(--yellow)}.data-box.status-box .dvalue{color:var(--yellow);text-shadow:0 0 8px var(--yellow);font-size:16px}
+    .slider-panel{background:linear-gradient(180deg,#141414,#0a0a0a);border:3px solid var(--green);border-radius:16px;box-shadow:0 0 20px rgba(57,255,20,.35),inset 0 0 30px rgba(57,255,20,.06);padding:14px 20px;margin-bottom:10px;display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap}
+    .slider-panel label{color:var(--green);text-shadow:0 0 10px var(--green);font-size:18px;font-weight:bold}
+    input[type="range"]{-webkit-appearance:none;appearance:none;width:280px;height:14px;border-radius:10px;background:linear-gradient(90deg,#002244,#005588,#0088cc);outline:none;border:2px solid var(--green);box-shadow:0 0 12px rgba(57,255,20,.3)}
+    input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:32px;height:32px;border-radius:50%;background:radial-gradient(circle,#39ff14,#1a8a0a);cursor:pointer;box-shadow:0 0 16px var(--green),0 0 30px rgba(57,255,20,.4);border:3px solid #fff}
+    input[type="range"]::-moz-range-thumb{width:32px;height:32px;border-radius:50%;background:radial-gradient(circle,#39ff14,#1a8a0a);cursor:pointer;box-shadow:0 0 16px var(--green),0 0 30px rgba(57,255,20,.4);border:3px solid #fff}
+    .slider-val{color:var(--cyan);font-size:22px;font-weight:bold;text-shadow:0 0 10px var(--cyan);min-width:140px;text-align:center}
+    .canvas-shell{border:2px solid var(--cyan);border-radius:16px;overflow:hidden;box-shadow:0 0 16px rgba(0,247,255,.35);background:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px),radial-gradient(circle at center,#0e0e0e 0%,#030303 72%);background-size:32px 32px,32px 32px,100% 100%}
+    svg{width:100%;height:auto;display:block}
+    .legend{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:10px;font-size:13px}
+    .legend span{background:#0c0c0c;padding:5px 10px;border-radius:10px;border:1px solid #222}
+    .hint{text-align:center;color:#777;margin-top:6px;font-size:12px}
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Kandilli Kız Lisesi Fizik Zümresi 2026</h1>
+  <h2>Kaldırma Kuvveti Simülasyonu 2</h2>
+
+  <div class="data-row">
+    <div class="data-box weight-box"><div class="dlabel">Ağırlık (G)</div><div class="dvalue" id="dWeight">10 N</div></div>
+    <div class="data-box buoy-box"><div class="dlabel">Kaldırma Kuvveti (Fk)</div><div class="dvalue" id="dBuoy">10 N</div></div>
+    <div class="data-box fluid-box"><div class="dlabel">Sıvı Yoğunluğu (ρs)</div><div class="dvalue" id="dFluid">1000 kg/m³</div></div>
+    <div class="data-box boat-box"><div class="dlabel">Tekne Yoğunluğu (ρt)</div><div class="dvalue" id="dBoat">500 kg/m³</div></div>
+    <div class="data-box status-box"><div class="dlabel">Durum</div><div class="dvalue" id="dStatus">Yüzüyor</div></div>
+  </div>
+
+  <div class="slider-panel">
+    <label for="densitySlider">⚙ Sıvı Yoğunluğu:</label>
+    <input type="range" id="densitySlider" min="300" max="2000" value="1000" step="10" />
+    <span class="slider-val" id="sliderVal">1000 kg/m³</span>
+  </div>
+
+  <div class="canvas-shell">
+    <svg id="scene" viewBox="0 0 900 620">
+      <defs>
+        <linearGradient id="gW" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="rgba(0,160,255,0.5)"/>
+          <stop offset="100%" stop-color="rgba(0,50,180,0.8)"/>
+        </linearGradient>
+        <linearGradient id="gB" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#ffb347"/>
+          <stop offset="45%" stop-color="#d2691e"/>
+          <stop offset="100%" stop-color="#7a3b10"/>
+        </linearGradient>
+        <filter id="fC"><feDropShadow dx="0" dy="0" stdDeviation="4" flood-color="#00f7ff"/></filter>
+        <filter id="fP"><feDropShadow dx="0" dy="0" stdDeviation="2" flood-color="#ff2bd6"/></filter>
+        <filter id="fG"><feDropShadow dx="0" dy="0" stdDeviation="2" flood-color="#39ff14"/></filter>
+        <filter id="fO"><feDropShadow dx="0" dy="0" stdDeviation="5" flood-color="#ff9f1c"/></filter>
+      </defs>
+
+      <!-- Kap -->
+      <rect x="100" y="100" width="700" height="490" rx="12" fill="#060616" stroke="#00f7ff" stroke-width="4" filter="url(#fC)"/>
+
+      <!-- Su -->
+      <rect id="svgWater" x="102" y="280" width="696" height="308" rx="6" fill="url(#gW)"/>
+      <line id="svgWLine" x1="102" y1="280" x2="798" y2="280" stroke="#00cfff" stroke-width="3" opacity="0.85" filter="url(#fC)"/>
+
+      <!-- Sıvı yoğunluğu -->
+      <text id="svgRho" x="450" y="555" text-anchor="middle" fill="#40c8ff" font-size="24" font-weight="bold" opacity="0.8">ρs = 1000 kg/m³</text>
+
+      <!-- Tekne -->
+      <g id="gBoat">
+        <path id="svgHull" d="" fill="url(#gB)" stroke="#ffd700" stroke-width="4" filter="url(#fO)"/>
+        <line id="svgDeck" x1="0" y1="0" x2="0" y2="0" stroke="#ffd700" stroke-width="2.5" opacity="0.6"/>
+        <line id="svgStripe" x1="0" y1="0" x2="0" y2="0" stroke="#ffd700" stroke-width="2" opacity="0.3"/>
+        <rect id="svgCabin" x="0" y="0" width="80" height="40" rx="7" fill="#b8450a" stroke="#ffd700" stroke-width="2.5"/>
+        <rect id="svgCabinWin" x="0" y="0" width="22" height="14" rx="3" fill="#fff01f" opacity="0.8"/>
+        <line id="svgMast" x1="0" y1="0" x2="0" y2="0" stroke="#ffd700" stroke-width="5" filter="url(#fO)"/>
+        <polygon id="svgFlag" points="0,0 0,0 0,0" fill="#ff2bd6" stroke="#ff2bd6" stroke-width="1" filter="url(#fP)"/>
+        <circle id="svgW1" cx="0" cy="0" r="6" fill="#fff01f" opacity="0.85"/>
+        <circle id="svgW2" cx="0" cy="0" r="6" fill="#fff01f" opacity="0.85"/>
+        <circle id="svgW3" cx="0" cy="0" r="6" fill="#fff01f" opacity="0.85"/>
+        <circle id="svgW4" cx="0" cy="0" r="6" fill="#fff01f" opacity="0.85"/>
+      </g>
+
+      <!-- Fk oku: çizgi + elle çizilen küçük ok ucu (yukarı) -->
+      <line id="svgFkLine" x1="0" y1="0" x2="0" y2="0" stroke="#39ff14" stroke-width="3" opacity="0"/>
+      <polygon id="svgFkHead" points="0,0 0,0 0,0" fill="#39ff14" opacity="0"/>
+      <text id="svgFkTxt" x="0" y="0" fill="#39ff14" font-size="13" font-weight="bold" opacity="0" filter="url(#fG)">Fk</text>
+
+      <!-- G oku: çizgi + elle çizilen küçük ok ucu (aşağı) -->
+      <line id="svgGLine" x1="0" y1="0" x2="0" y2="0" stroke="#ff2bd6" stroke-width="3" opacity="0"/>
+      <polygon id="svgGHead" points="0,0 0,0 0,0" fill="#ff2bd6" opacity="0"/>
+      <text id="svgGTxt" x="0" y="0" fill="#ff2bd6" font-size="13" font-weight="bold" opacity="0" filter="url(#fP)">G</text>
+
+      <!-- BATTI -->
+      <text id="svgSunk" x="450" y="420" text-anchor="middle" fill="#ff2bd6" font-size="48" font-weight="bold" opacity="0" filter="url(#fP)">BATTI!</text>
+    </svg>
+  </div>
+
+  <div class="legend">
+    <span style="color:#39ff14">↑ Yeşil: Kaldırma kuvveti (Fk)</span>
+    <span style="color:#ff2bd6">↓ Pembe: Ağırlık (G)</span>
+    <span style="color:#00f7ff">Mavi: Sıvı</span>
+    <span style="color:#ff9f1c">Turuncu: Tekne</span>
+  </div>
+  <div class="hint">Kaydırıcıyı hareket ettirerek sıvı yoğunluğunu değiştirin. ρt = 500 kg/m³ altında tekne batar.</div>
+</div>
+
+<script>
+(()=>{
+  const g=10,boatMass=1,boatWeight=boatMass*g,boatVolume=0.002,boatDensity=boatMass/boatVolume;
+  const WATER_Y=280,CONT_BOTTOM=588,CX=450,BW=340,BH=110,HALF=BW/2,CURVE=40;
+
+  const $=id=>document.getElementById(id);
+  const slider=$('densitySlider'),sliderVal=$('sliderVal'),
+    dWeight=$('dWeight'),dBuoy=$('dBuoy'),dFluid=$('dFluid'),
+    dBoat=$('dBoat'),dStatus=$('dStatus'),
+    svgWater=$('svgWater'),svgWLine=$('svgWLine'),svgRho=$('svgRho'),
+    svgHull=$('svgHull'),svgDeck=$('svgDeck'),svgStripe=$('svgStripe'),
+    svgCabin=$('svgCabin'),svgCabinWin=$('svgCabinWin'),
+    svgMast=$('svgMast'),svgFlag=$('svgFlag'),
+    svgW1=$('svgW1'),svgW2=$('svgW2'),svgW3=$('svgW3'),svgW4=$('svgW4'),
+    svgFkLine=$('svgFkLine'),svgFkHead=$('svgFkHead'),svgFkTxt=$('svgFkTxt'),
+    svgGLine=$('svgGLine'),svgGHead=$('svgGHead'),svgGTxt=$('svgGTxt'),
+    svgSunk=$('svgSunk');
+
+  function sL(el,x1,y1,x2,y2){el.setAttribute('x1',x1);el.setAttribute('y1',y1);el.setAttribute('x2',x2);el.setAttribute('y2',y2)}
+
+  function hull(tY,bY){
+    const tl=CX-HALF,tr=CX+HALF,bl=CX-HALF+45,br=CX+HALF-45;
+    return`M${tl} ${tY} L${tr} ${tY} L${br} ${bY-CURVE} Q${CX} ${bY+8} ${bl} ${bY-CURVE} Z`;
+  }
+
+  /* Ok ucu çizici: küçük üçgen */
+  const TIP=5; /* ok ucu yarı genişliği */
+  const TIPH=8; /* ok ucu yüksekliği */
+
+  function arrowUp(cx, tipY){
+    /* Yukarı bakan ok ucu üçgeni */
+    return `${cx},${tipY} ${cx-TIP},${tipY+TIPH} ${cx+TIP},${tipY+TIPH}`;
+  }
+
+  function arrowDown(cx, tipY){
+    /* Aşağı bakan ok ucu üçgeni */
+    return `${cx},${tipY} ${cx-TIP},${tipY-TIPH} ${cx+TIP},${tipY-TIPH}`;
+  }
+
+  function update(){
+    const rho=+slider.value;
+    sliderVal.textContent=rho+' kg/m³';
+    dFluid.textContent=rho+' kg/m³';
+    dBoat.textContent=boatDensity.toFixed(0)+' kg/m³';
+    dWeight.textContent=boatWeight+' N';
+    svgRho.textContent='ρs = '+rho+' kg/m³';
+
+    let ratio=boatDensity/rho,sunk=false;
+    if(ratio>=1){ratio=1;sunk=true}
+
+    let Fk=sunk?rho*boatVolume*g:boatWeight;
+    dBuoy.textContent=Fk.toFixed(1)+' N';
+
+    if(sunk){dStatus.textContent='Battı!';dStatus.style.color='#ff2bd6'}
+    else if(ratio>.85){dStatus.textContent='Batmak üzere!';dStatus.style.color='#ff9f1c'}
+    else if(ratio>.5){dStatus.textContent='Yüzüyor';dStatus.style.color='#fff01f'}
+    else{dStatus.textContent='Yüzüyor ✓';dStatus.style.color='#39ff14'}
+
+    svgWater.setAttribute('y',WATER_Y);
+    svgWater.setAttribute('height',CONT_BOTTOM-WATER_Y);
+    sL(svgWLine,102,WATER_Y,798,WATER_Y);
+
+    let topY,botY;
+    const subPx=ratio*BH;
+    if(sunk){botY=CONT_BOTTOM-6;topY=botY-BH}
+    else{topY=WATER_Y-(BH-subPx);botY=topY+BH}
+
+    const midY=(topY+botY)/2;
+
+    svgHull.setAttribute('d',hull(topY,botY));
+    svgHull.setAttribute('opacity',sunk?'0.5':'1');
+
+    sL(svgDeck,CX-HALF,topY,CX+HALF,topY);
+    sL(svgStripe,CX-HALF+15,topY+BH*.35,CX+HALF-15,topY+BH*.35);
+
+    svgCabin.setAttribute('x',CX-40);svgCabin.setAttribute('y',topY-40);
+    svgCabin.setAttribute('width',80);svgCabin.setAttribute('height',40);
+    svgCabinWin.setAttribute('x',CX-11);svgCabinWin.setAttribute('y',topY-30);
+
+    const mT=topY-100;
+    sL(svgMast,CX,topY-40,CX,mT);
+    svgFlag.setAttribute('points',`${CX},${mT} ${CX+45},${mT+14} ${CX},${mT+28}`);
+
+    const wy=topY+BH*.22;
+    svgW1.setAttribute('cx',CX-90);svgW1.setAttribute('cy',wy);
+    svgW2.setAttribute('cx',CX-30);svgW2.setAttribute('cy',wy);
+    svgW3.setAttribute('cx',CX+30);svgW3.setAttribute('cy',wy);
+    svgW4.setAttribute('cx',CX+90);svgW4.setAttribute('cy',wy);
+
+    /* ===== OKLAR ===== */
+    const AL=40;
+
+    if(!sunk){
+      /* Fk: ortadan yukarı — yeşil */
+      const fkTop=midY-AL;
+      sL(svgFkLine,CX,midY,CX,fkTop+TIPH);
+      svgFkHead.setAttribute('points',arrowUp(CX,fkTop));
+      svgFkLine.setAttribute('opacity',1);
+      svgFkHead.setAttribute('opacity',1);
+
+      svgFkTxt.setAttribute('x',CX+12);
+      svgFkTxt.setAttribute('y',midY-AL/2+4);
+      svgFkTxt.textContent='Fk = '+Fk.toFixed(1)+' N';
+      svgFkTxt.setAttribute('opacity',1);
+
+      /* G: ortadan aşağı — pembe */
+      const gBot=midY+AL;
+      sL(svgGLine,CX,midY,CX,gBot-TIPH);
+      svgGHead.setAttribute('points',arrowDown(CX,gBot));
+      svgGLine.setAttribute('opacity',1);
+      svgGHead.setAttribute('opacity',1);
+
+      svgGTxt.setAttribute('x',CX+12);
+      svgGTxt.setAttribute('y',midY+AL/2+4);
+      svgGTxt.textContent='G = '+boatWeight+' N';
+      svgGTxt.setAttribute('opacity',1);
+
+      svgSunk.setAttribute('opacity',0);
+
+    } else {
+      const fkL=Math.max(15,(Fk/boatWeight)*AL);
+
+      /* Fk yukarı */
+      const fkTop=midY-fkL;
+      sL(svgFkLine,CX,midY,CX,fkTop+TIPH);
+      svgFkHead.setAttribute('points',arrowUp(CX,fkTop));
+      svgFkLine.setAttribute('opacity',1);
+      svgFkHead.setAttribute('opacity',1);
+
+      svgFkTxt.setAttribute('x',CX+12);
+      svgFkTxt.setAttribute('y',midY-fkL/2+4);
+      svgFkTxt.textContent='Fk = '+Fk.toFixed(1)+' N';
+      svgFkTxt.setAttribute('opacity',1);
+
+      /* G aşağı */
+      const gBot=midY+AL;
+      sL(svgGLine,CX,midY,CX,gBot-TIPH);
+      svgGHead.setAttribute('points',arrowDown(CX,gBot));
+      svgGLine.setAttribute('opacity',1);
+      svgGHead.setAttribute('opacity',1);
+
+      svgGTxt.setAttribute('x',CX+12);
+      svgGTxt.setAttribute('y',midY+AL/2+4);
+      svgGTxt.textContent='G = '+boatWeight+' N';
+      svgGTxt.setAttribute('opacity',1);
+
+      svgSunk.setAttribute('opacity',1);
+    }
+  }
+
+  slider.addEventListener('input',update);
+  update();
+})();
+</script>
+</body>
+</html>
