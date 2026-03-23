@@ -37,7 +37,6 @@
 <div class="wrap">
   <h1>Kandilli Kız Lisesi Fizik Zümresi 2026</h1>
   <h2>Kaldırma Kuvveti Simülasyonu 2</h2>
-
   <div class="data-row">
     <div class="data-box weight-box"><div class="dlabel">Ağırlık (G)</div><div class="dvalue" id="dWeight">10 N</div></div>
     <div class="data-box buoy-box"><div class="dlabel">Kaldırma Kuvveti (Fk)</div><div class="dvalue" id="dBuoy">10 N</div></div>
@@ -45,13 +44,11 @@
     <div class="data-box boat-box"><div class="dlabel">Tekne Yoğunluğu (ρt)</div><div class="dvalue" id="dBoat">500 kg/m³</div></div>
     <div class="data-box status-box"><div class="dlabel">Durum</div><div class="dvalue" id="dStatus">Yüzüyor</div></div>
   </div>
-
   <div class="slider-panel">
     <label for="densitySlider">⚙ Sıvı Yoğunluğu:</label>
     <input type="range" id="densitySlider" min="300" max="2000" value="1000" step="10" />
     <span class="slider-val" id="sliderVal">1000 kg/m³</span>
   </div>
-
   <div class="canvas-shell">
     <svg id="scene" viewBox="0 0 900 620">
       <defs>
@@ -69,17 +66,13 @@
         <filter id="fG"><feDropShadow dx="0" dy="0" stdDeviation="2" flood-color="#39ff14"/></filter>
         <filter id="fO"><feDropShadow dx="0" dy="0" stdDeviation="5" flood-color="#ff9f1c"/></filter>
       </defs>
-
       <!-- Kap -->
       <rect x="100" y="100" width="700" height="490" rx="12" fill="#060616" stroke="#00f7ff" stroke-width="4" filter="url(#fC)"/>
-
       <!-- Su -->
       <rect id="svgWater" x="102" y="280" width="696" height="308" rx="6" fill="url(#gW)"/>
       <line id="svgWLine" x1="102" y1="280" x2="798" y2="280" stroke="#00cfff" stroke-width="3" opacity="0.85" filter="url(#fC)"/>
-
       <!-- Sıvı yoğunluğu -->
       <text id="svgRho" x="450" y="555" text-anchor="middle" fill="#40c8ff" font-size="24" font-weight="bold" opacity="0.8">ρs = 1000 kg/m³</text>
-
       <!-- Tekne -->
       <g id="gBoat">
         <path id="svgHull" d="" fill="url(#gB)" stroke="#ffd700" stroke-width="4" filter="url(#fO)"/>
@@ -88,28 +81,23 @@
         <rect id="svgCabin" x="0" y="0" width="80" height="40" rx="7" fill="#b8450a" stroke="#ffd700" stroke-width="2.5"/>
         <rect id="svgCabinWin" x="0" y="0" width="22" height="14" rx="3" fill="#fff01f" opacity="0.8"/>
         <line id="svgMast" x1="0" y1="0" x2="0" y2="0" stroke="#ffd700" stroke-width="5" filter="url(#fO)"/>
-        <polygon id="svgFlag" points="0,0 0,0 0,0" fill="#ff2bd6" stroke="#ff2bd6" stroke-width="1" filter="url(#fP)"/>
         <circle id="svgW1" cx="0" cy="0" r="6" fill="#fff01f" opacity="0.85"/>
         <circle id="svgW2" cx="0" cy="0" r="6" fill="#fff01f" opacity="0.85"/>
         <circle id="svgW3" cx="0" cy="0" r="6" fill="#fff01f" opacity="0.85"/>
         <circle id="svgW4" cx="0" cy="0" r="6" fill="#fff01f" opacity="0.85"/>
       </g>
-
-      <!-- Fk oku: çizgi + elle çizilen küçük ok ucu (yukarı) -->
-      <line id="svgFkLine" x1="0" y1="0" x2="0" y2="0" stroke="#39ff14" stroke-width="3" opacity="0"/>
-      <polygon id="svgFkHead" points="0,0 0,0 0,0" fill="#39ff14" opacity="0"/>
-      <text id="svgFkTxt" x="0" y="0" fill="#39ff14" font-size="13" font-weight="bold" opacity="0" filter="url(#fG)">Fk</text>
-
-      <!-- G oku: çizgi + elle çizilen küçük ok ucu (aşağı) -->
-      <line id="svgGLine" x1="0" y1="0" x2="0" y2="0" stroke="#ff2bd6" stroke-width="3" opacity="0"/>
-      <polygon id="svgGHead" points="0,0 0,0 0,0" fill="#ff2bd6" opacity="0"/>
-      <text id="svgGTxt" x="0" y="0" fill="#ff2bd6" font-size="13" font-weight="bold" opacity="0" filter="url(#fP)">G</text>
-
       <!-- BATTI -->
-      <text id="svgSunk" x="450" y="420" text-anchor="middle" fill="#ff2bd6" font-size="48" font-weight="bold" opacity="0" filter="url(#fP)">BATTI!</text>
+      <text id="svgSunk" x="450" y="80" text-anchor="middle" fill="#ff2bd6" font-size="48" font-weight="bold" opacity="0" filter="url(#fP)">BATTI!</text>
+      <!-- Fk oku: çizgi + ok ucu (yukarı) -->
+      <line id="svgFkLine" x1="0" y1="0" x2="0" y2="0" stroke="#39ff14" stroke-width="5" opacity="0"/>
+      <polygon id="svgFkHead" points="0,0 0,0 0,0" fill="#39ff14" opacity="0"/>
+      <text id="svgFkTxt" x="0" y="0" text-anchor="middle" fill="#39ff14" font-size="16" font-weight="bold" opacity="0" filter="url(#fG)">Fk = 10 N</text>
+      <!-- G oku: çizgi + ok ucu (aşağı) -->
+      <line id="svgGLine" x1="0" y1="0" x2="0" y2="0" stroke="#ff2bd6" stroke-width="5" opacity="0"/>
+      <polygon id="svgGHead" points="0,0 0,0 0,0" fill="#ff2bd6" opacity="0"/>
+      <text id="svgGTxt" x="0" y="0" text-anchor="middle" fill="#ff2bd6" font-size="16" font-weight="bold" opacity="0" filter="url(#fP)">G = 10 N</text>
     </svg>
   </div>
-
   <div class="legend">
     <span style="color:#39ff14">↑ Yeşil: Kaldırma kuvveti (Fk)</span>
     <span style="color:#ff2bd6">↓ Pembe: Ağırlık (G)</span>
@@ -118,12 +106,10 @@
   </div>
   <div class="hint">Kaydırıcıyı hareket ettirerek sıvı yoğunluğunu değiştirin. ρt = 500 kg/m³ altında tekne batar.</div>
 </div>
-
 <script>
 (()=>{
   const g=10,boatMass=1,boatWeight=boatMass*g,boatVolume=0.002,boatDensity=boatMass/boatVolume;
   const WATER_Y=280,CONT_BOTTOM=588,CX=450,BW=340,BH=110,HALF=BW/2,CURVE=40;
-
   const $=id=>document.getElementById(id);
   const slider=$('densitySlider'),sliderVal=$('sliderVal'),
     dWeight=$('dWeight'),dBuoy=$('dBuoy'),dFluid=$('dFluid'),
@@ -131,33 +117,25 @@
     svgWater=$('svgWater'),svgWLine=$('svgWLine'),svgRho=$('svgRho'),
     svgHull=$('svgHull'),svgDeck=$('svgDeck'),svgStripe=$('svgStripe'),
     svgCabin=$('svgCabin'),svgCabinWin=$('svgCabinWin'),
-    svgMast=$('svgMast'),svgFlag=$('svgFlag'),
+    svgMast=$('svgMast'),
     svgW1=$('svgW1'),svgW2=$('svgW2'),svgW3=$('svgW3'),svgW4=$('svgW4'),
     svgFkLine=$('svgFkLine'),svgFkHead=$('svgFkHead'),svgFkTxt=$('svgFkTxt'),
     svgGLine=$('svgGLine'),svgGHead=$('svgGHead'),svgGTxt=$('svgGTxt'),
     svgSunk=$('svgSunk');
-
   function sL(el,x1,y1,x2,y2){el.setAttribute('x1',x1);el.setAttribute('y1',y1);el.setAttribute('x2',x2);el.setAttribute('y2',y2)}
-
   function hull(tY,bY){
     const tl=CX-HALF,tr=CX+HALF,bl=CX-HALF+45,br=CX+HALF-45;
-    return`M${tl} ${tY} L${tr} ${tY} L${br} ${bY-CURVE} Q${CX} ${bY+8} ${bl} ${bY-CURVE} Z`;
+    return `M${tl} ${tY} L${tr} ${tY} L${br} ${bY-CURVE} Q${CX} ${bY+8} ${bl} ${bY-CURVE} Z`;
   }
-
   /* Ok ucu çizici: küçük üçgen */
-  const TIP=5; /* ok ucu yarı genişliği */
-  const TIPH=8; /* ok ucu yüksekliği */
-
+  const TIP=8; /* ok ucu yarı genişliği */
+  const TIPH=12; /* ok ucu yüksekliği */
   function arrowUp(cx, tipY){
-    /* Yukarı bakan ok ucu üçgeni */
     return `${cx},${tipY} ${cx-TIP},${tipY+TIPH} ${cx+TIP},${tipY+TIPH}`;
   }
-
   function arrowDown(cx, tipY){
-    /* Aşağı bakan ok ucu üçgeni */
     return `${cx},${tipY} ${cx-TIP},${tipY-TIPH} ${cx+TIP},${tipY-TIPH}`;
   }
-
   function update(){
     const rho=+slider.value;
     sliderVal.textContent=rho+' kg/m³';
@@ -165,110 +143,63 @@
     dBoat.textContent=boatDensity.toFixed(0)+' kg/m³';
     dWeight.textContent=boatWeight+' N';
     svgRho.textContent='ρs = '+rho+' kg/m³';
-
     let ratio=boatDensity/rho,sunk=false;
     if(ratio>=1){ratio=1;sunk=true}
-
     let Fk=sunk?rho*boatVolume*g:boatWeight;
     dBuoy.textContent=Fk.toFixed(1)+' N';
-
     if(sunk){dStatus.textContent='Battı!';dStatus.style.color='#ff2bd6'}
     else if(ratio>.85){dStatus.textContent='Batmak üzere!';dStatus.style.color='#ff9f1c'}
     else if(ratio>.5){dStatus.textContent='Yüzüyor';dStatus.style.color='#fff01f'}
     else{dStatus.textContent='Yüzüyor ✓';dStatus.style.color='#39ff14'}
-
     svgWater.setAttribute('y',WATER_Y);
     svgWater.setAttribute('height',CONT_BOTTOM-WATER_Y);
     sL(svgWLine,102,WATER_Y,798,WATER_Y);
-
     let topY,botY;
     const subPx=ratio*BH;
     if(sunk){botY=CONT_BOTTOM-6;topY=botY-BH}
     else{topY=WATER_Y-(BH-subPx);botY=topY+BH}
-
     const midY=(topY+botY)/2;
-
     svgHull.setAttribute('d',hull(topY,botY));
     svgHull.setAttribute('opacity',sunk?'0.5':'1');
-
     sL(svgDeck,CX-HALF,topY,CX+HALF,topY);
     sL(svgStripe,CX-HALF+15,topY+BH*.35,CX+HALF-15,topY+BH*.35);
-
     svgCabin.setAttribute('x',CX-40);svgCabin.setAttribute('y',topY-40);
     svgCabin.setAttribute('width',80);svgCabin.setAttribute('height',40);
     svgCabinWin.setAttribute('x',CX-11);svgCabinWin.setAttribute('y',topY-30);
-
     const mT=topY-100;
     sL(svgMast,CX,topY-40,CX,mT);
-    svgFlag.setAttribute('points',`${CX},${mT} ${CX+45},${mT+14} ${CX},${mT+28}`);
-
     const wy=topY+BH*.22;
     svgW1.setAttribute('cx',CX-90);svgW1.setAttribute('cy',wy);
     svgW2.setAttribute('cx',CX-30);svgW2.setAttribute('cy',wy);
     svgW3.setAttribute('cx',CX+30);svgW3.setAttribute('cy',wy);
     svgW4.setAttribute('cx',CX+90);svgW4.setAttribute('cy',wy);
-
     /* ===== OKLAR ===== */
-    const AL=40;
-
-    if(!sunk){
-      /* Fk: ortadan yukarı — yeşil */
-      const fkTop=midY-AL;
-      sL(svgFkLine,CX,midY,CX,fkTop+TIPH);
-      svgFkHead.setAttribute('points',arrowUp(CX,fkTop));
-      svgFkLine.setAttribute('opacity',1);
-      svgFkHead.setAttribute('opacity',1);
-
-      svgFkTxt.setAttribute('x',CX+12);
-      svgFkTxt.setAttribute('y',midY-AL/2+4);
-      svgFkTxt.textContent='Fk = '+Fk.toFixed(1)+' N';
-      svgFkTxt.setAttribute('opacity',1);
-
-      /* G: ortadan aşağı — pembe */
-      const gBot=midY+AL;
-      sL(svgGLine,CX,midY,CX,gBot-TIPH);
-      svgGHead.setAttribute('points',arrowDown(CX,gBot));
-      svgGLine.setAttribute('opacity',1);
-      svgGHead.setAttribute('opacity',1);
-
-      svgGTxt.setAttribute('x',CX+12);
-      svgGTxt.setAttribute('y',midY+AL/2+4);
-      svgGTxt.textContent='G = '+boatWeight+' N';
-      svgGTxt.setAttribute('opacity',1);
-
-      svgSunk.setAttribute('opacity',0);
-
-    } else {
-      const fkL=Math.max(15,(Fk/boatWeight)*AL);
-
-      /* Fk yukarı */
-      const fkTop=midY-fkL;
-      sL(svgFkLine,CX,midY,CX,fkTop+TIPH);
-      svgFkHead.setAttribute('points',arrowUp(CX,fkTop));
-      svgFkLine.setAttribute('opacity',1);
-      svgFkHead.setAttribute('opacity',1);
-
-      svgFkTxt.setAttribute('x',CX+12);
-      svgFkTxt.setAttribute('y',midY-fkL/2+4);
-      svgFkTxt.textContent='Fk = '+Fk.toFixed(1)+' N';
-      svgFkTxt.setAttribute('opacity',1);
-
-      /* G aşağı */
-      const gBot=midY+AL;
-      sL(svgGLine,CX,midY,CX,gBot-TIPH);
-      svgGHead.setAttribute('points',arrowDown(CX,gBot));
-      svgGLine.setAttribute('opacity',1);
-      svgGHead.setAttribute('opacity',1);
-
-      svgGTxt.setAttribute('x',CX+12);
-      svgGTxt.setAttribute('y',midY+AL/2+4);
-      svgGTxt.textContent='G = '+boatWeight+' N';
-      svgGTxt.setAttribute('opacity',1);
-
-      svgSunk.setAttribute('opacity',1);
-    }
+    const FkLen = 120; // Yeşil ok (Fk) iki katı uzunluk
+    const GLen = 60;   // Pembe ok (G) kısa
+    // Fk: ortadan yukarı — yeşil
+    let actualFkLen = sunk ? Math.max(20, (Fk/boatWeight) * FkLen) : FkLen;
+    let fkTop = midY - actualFkLen;
+    sL(svgFkLine,CX,midY,CX,fkTop+TIPH);
+    svgFkHead.setAttribute('points',arrowUp(CX,fkTop));
+    svgFkLine.setAttribute('opacity',1);
+    svgFkHead.setAttribute('opacity',1);
+    svgFkTxt.setAttribute('x',CX);
+    svgFkTxt.setAttribute('y',fkTop-10);
+    svgFkTxt.textContent='Fk = '+Fk.toFixed(1)+' N';
+    svgFkTxt.setAttribute('opacity',1);
+    // G: ortadan aşağı — pembe (kısa)
+    const gBot=midY+GLen;
+    sL(svgGLine,CX,midY,CX,gBot-TIPH);
+    svgGHead.setAttribute('points',arrowDown(CX,gBot));
+    svgGLine.setAttribute('opacity',1);
+    svgGHead.setAttribute('opacity',1);
+    svgGTxt.setAttribute('x',CX);
+    svgGTxt.setAttribute('y',gBot+20);
+    svgGTxt.textContent='G = '+boatWeight+' N';
+    svgGTxt.setAttribute('opacity',1);
+    // BATTI
+    svgSunk.setAttribute('opacity', sunk ? 1 : 0);
   }
-
   slider.addEventListener('input',update);
   update();
 })();
